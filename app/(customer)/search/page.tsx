@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Search as SearchIcon, Map, Filter, Star, MapPin, Loader2 } from 'lucide-react';
 import { MobileContainer } from '@/components/layout/MobileContainer';
 import { Header } from '@/components/layout/Header';
@@ -16,7 +16,7 @@ import { useSearchParams } from 'next/navigation';
 
 type FilterType = 'all' | 'nearest' | 'rating' | 'price';
 
-export default function SearchPage() {
+function SearchContent() {
     const searchParams = useSearchParams();
     const initialQuery = searchParams.get('query') || '';
     const categoryParam = searchParams.get('category') || '';
@@ -112,8 +112,8 @@ export default function SearchPage() {
                             key={filter.id}
                             onClick={() => setActiveFilter(filter.id as FilterType)}
                             className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${activeFilter === filter.id
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                 }`}
                         >
                             {filter.label}
@@ -189,5 +189,13 @@ export default function SearchPage() {
 
             <BottomNav />
         </MobileContainer>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+            <SearchContent />
+        </Suspense>
     );
 }
