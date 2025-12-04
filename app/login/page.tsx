@@ -2,7 +2,12 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2, Briefcase, Users, Shield } from 'lucide-react';
-// ... imports
+import { MobileContainer } from '@/components/layout/MobileContainer';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase/client';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function LoginContent() {
     const router = useRouter();
@@ -27,7 +32,64 @@ function LoginContent() {
         }
     }, [searchParams]);
 
-    // ... formData state and handleSubmit ...
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        fullName: '',
+    });
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            if (isLogin) {
+                // 1. Sign In
+                const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
+                    email: formData.email,
+                    password: formData.password,
+                });
+                if (signInError) throw signInError;
+
+                // 2. Check Role
+                if (user) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('role')
+                        .eq('id', user.id)
+                        .single();
+
+                    const userRole = profile?.role || 'customer';
+
+                    // 3. Redirect based on role
+                    if (userRole === 'admin') router.push('/admin');
+                    else if (userRole === 'worker') router.push('/worker/dashboard');
+                    else router.push('/');
+                }
+            } else {
+                // 1. Sign Up
+                const { error: signUpError } = await supabase.auth.signUp({
+                    email: formData.email,
+                    password: formData.password,
+                    options: {
+                        data: {
+                            full_name: formData.fullName,
+                            role: role, // Pass role to metadata
+                        },
+                    },
+                });
+                if (signUpError) throw signUpError;
+                alert('Registrasi berhasil! Silakan cek email untuk verifikasi.');
+                setIsLogin(true);
+            }
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || 'Terjadi kesalahan');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <MobileContainer className="bg-white min-h-screen flex flex-col justify-center p-6">
