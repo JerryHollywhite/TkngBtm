@@ -31,7 +31,7 @@ export default function ProfilePage() {
 
     return (
         <MobileContainer>
-            <div className="bg-primary p-6 pt-12 text-white">
+            <div className="bg-[#2F80ED] p-6 pt-12 text-white">
                 <div className="flex items-center gap-4 mb-6">
                     <div className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
                         <User className="h-8 w-8 text-white" />
