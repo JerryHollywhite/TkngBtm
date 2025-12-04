@@ -1,13 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2, Briefcase, Users } from 'lucide-react';
-import { MobileContainer } from '@/components/layout/MobileContainer';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import Link from 'next/link';
-import { supabase } from '@/lib/supabase/client';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2, Briefcase, Users, Shield } from 'lucide-react';
+// ... imports
 
 function LoginContent() {
     const router = useRouter();
@@ -16,77 +11,23 @@ function LoginContent() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [role, setRole] = useState<'customer' | 'worker'>('customer');
+    const [role, setRole] = useState<'customer' | 'worker' | 'admin'>('customer');
 
     useEffect(() => {
         const roleParam = searchParams.get('role');
         if (roleParam === 'worker') {
             setRole('worker');
-            setIsLogin(false); // Auto switch to register for worker links
+            setIsLogin(false);
         } else if (roleParam === 'customer') {
             setRole('customer');
-            setIsLogin(false); // Auto switch to register for customer links
+            setIsLogin(false);
+        } else if (roleParam === 'admin') {
+            setRole('admin');
+            setIsLogin(false);
         }
     }, [searchParams]);
 
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-        fullName: '',
-    });
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
-        try {
-            if (isLogin) {
-                // 1. Sign In
-                const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
-                    email: formData.email,
-                    password: formData.password,
-                });
-                if (signInError) throw signInError;
-
-                // 2. Check Role
-                if (user) {
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('role')
-                        .eq('id', user.id)
-                        .single();
-
-                    const userRole = profile?.role || 'customer';
-
-                    // 3. Redirect based on role
-                    if (userRole === 'admin') router.push('/admin');
-                    else if (userRole === 'worker') router.push('/worker/dashboard');
-                    else router.push('/');
-                }
-            } else {
-                // 1. Sign Up
-                const { error: signUpError } = await supabase.auth.signUp({
-                    email: formData.email,
-                    password: formData.password,
-                    options: {
-                        data: {
-                            full_name: formData.fullName,
-                            role: role, // Pass role to metadata
-                        },
-                    },
-                });
-                if (signUpError) throw signUpError;
-                alert('Registrasi berhasil! Silakan cek email untuk verifikasi.');
-                setIsLogin(true);
-            }
-        } catch (err: any) {
-            console.error(err);
-            setError(err.message || 'Terjadi kesalahan');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    // ... formData state and handleSubmit ...
 
     return (
         <MobileContainer className="bg-white min-h-screen flex flex-col justify-center p-6">
@@ -99,7 +40,9 @@ function LoginContent() {
                         ? 'Masuk untuk mengakses layanan tukang terbaik.'
                         : role === 'worker'
                             ? 'Daftar sebagai Mitra Tukang dan mulai terima pesanan.'
-                            : 'Daftar sekarang dan temukan solusi rumahmu.'}
+                            : role === 'admin'
+                                ? 'Daftar sebagai Administrator sistem.'
+                                : 'Daftar sekarang dan temukan solusi rumahmu.'}
                 </p>
             </div>
 
@@ -128,6 +71,15 @@ function LoginContent() {
                         >
                             <Briefcase className="h-6 w-6" />
                             <span className="text-xs font-bold">Mitra Tukang</span>
+                        </div>
+                    )}
+                    {/* Admin Option (Only visible via URL) */}
+                    {searchParams.get('role') === 'admin' && (
+                        <div
+                            className="cursor-default p-3 rounded-xl border-2 border-primary bg-primary/5 text-primary flex flex-col items-center gap-2 transition-all"
+                        >
+                            <Shield className="h-6 w-6" />
+                            <span className="text-xs font-bold">Administrator</span>
                         </div>
                     )}
                 </div>
