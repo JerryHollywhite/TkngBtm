@@ -88,14 +88,14 @@ export default function AdminWorkersPage() {
                     <div className="flex gap-2 overflow-x-auto pb-2">
                         <Button
                             size="sm"
-                            variant={filter === 'all' ? 'default' : 'outline'}
+                            variant={filter === 'all' ? 'primary' : 'outline'}
                             onClick={() => setFilter('all')}
                         >
                             Semua
                         </Button>
                         <Button
                             size="sm"
-                            variant={filter === 'unverified' ? 'default' : 'outline'}
+                            variant={filter === 'unverified' ? 'primary' : 'outline'}
                             onClick={() => setFilter('unverified')}
                             className={filter === 'unverified' ? 'bg-orange-500 hover:bg-orange-600' : ''}
                         >
@@ -103,7 +103,7 @@ export default function AdminWorkersPage() {
                         </Button>
                         <Button
                             size="sm"
-                            variant={filter === 'verified' ? 'default' : 'outline'}
+                            variant={filter === 'verified' ? 'primary' : 'outline'}
                             onClick={() => setFilter('verified')}
                             className={filter === 'verified' ? 'bg-green-600 hover:bg-green-700' : ''}
                         >
@@ -143,7 +143,7 @@ export default function AdminWorkersPage() {
                                         <div className="mt-3 flex gap-2">
                                             <Button
                                                 size="sm"
-                                                variant={worker.is_verified ? "outline" : "default"}
+                                                variant={worker.is_verified ? "outline" : "primary"}
                                                 className={`flex-1 ${!worker.is_verified ? 'bg-green-600 hover:bg-green-700' : ''}`}
                                                 onClick={() => toggleVerification(worker.id, worker.is_verified)}
                                             >
