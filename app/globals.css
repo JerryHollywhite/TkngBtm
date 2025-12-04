@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Brand Colors - Premium Gradient */
+    --primary: 221 83% 53%;
+    /* #2F80ED */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 256 100% 67%;
+    /* #6A52FF */
+    --secondary-foreground: 210 40% 98%;
+
+    /* Backgrounds */
+    --background: 210 40% 98%;
+    /* Soft Blue-ish White */
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    /* UI Elements */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+
+    /* Radius */
+    --radius: 1.5rem;
+    /* 24px for modern rounded corners */
   }
 }
 
+@layer components {
+
+  /* Glassmorphism Effects */
+  .glass {
+    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-lg;
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-md bg-black/30 border border-white/10 shadow-lg;
+  }
+
+  /* Premium Card Style */
+  .card-premium {
+    border-radius: 24px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    background-color: white;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .card-premium:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Gradient Button */
+  .btn-gradient {
+    @apply bg-gradient-to-r from-[#2F80ED] to-[#6A52FF] text-white font-semibold shadow-md hover:shadow-lg hover:opacity-95 transition-all duration-150 active:scale-[0.98] rounded-2xl;
+  }
+
+  /* Gradient Text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#2F80ED] to-[#6A52FF];
+  }
+}
+
+@layer utilities {
+
+  /* Safe Area for Mobile */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Hide Scrollbar */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Base Body Styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Page Transition Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Progress Bar Animation */
+@keyframes progressGrow {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: var(--progress-width);
+  }
+}
+
+.progress-animated {
+  animation: progressGrow 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Utility Animation Classes */
+.animate-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.slide-in-from-bottom-4 {
+  animation: slideUp 0.4s ease-out;
+}
+
+.zoom-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Delay Utilities */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
 }
