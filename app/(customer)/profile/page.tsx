@@ -40,7 +40,7 @@ export default function ProfilePage() {
                         <h1 className="text-xl font-bold">
                             {user ? (user.user_metadata?.full_name || 'Pengguna') : 'Halo, Tamu'}
                         </h1>
-                        <p className="text-blue-200 text-sm">
+                        <p className="text-white text-sm">
                             {user ? user.email : 'Masuk untuk akses fitur lengkap'}
                         </p>
                     </div>
@@ -48,7 +48,7 @@ export default function ProfilePage() {
 
                 {!user && !isLoading && (
                     <Link href="/login">
-                        <Button variant="secondary" className="w-full font-bold">
+                        <Button variant="secondary" className="w-full font-bold bg-white text-primary hover:bg-white/90">
                             Masuk / Daftar
                         </Button>
                     </Link>
