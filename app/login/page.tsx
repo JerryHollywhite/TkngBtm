@@ -105,27 +105,31 @@ function LoginContent() {
 
             {/* Role Selection (Only for Register) */}
             {!isLogin && (
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                    <div
-                        onClick={() => setRole('customer')}
-                        className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${role === 'customer'
-                            ? 'border-primary bg-primary/5 text-primary'
-                            : 'border-border hover:border-primary/50'
-                            }`}
-                    >
-                        <Users className="h-6 w-6" />
-                        <span className="text-xs font-bold">Pelanggan</span>
-                    </div>
-                    <div
-                        onClick={() => setRole('worker')}
-                        className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${role === 'worker'
-                            ? 'border-primary bg-primary/5 text-primary'
-                            : 'border-border hover:border-primary/50'
-                            }`}
-                    >
-                        <Briefcase className="h-6 w-6" />
-                        <span className="text-xs font-bold">Mitra Tukang</span>
-                    </div>
+                <div className={`grid gap-3 mb-6 ${searchParams.get('role') ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                    {(!searchParams.get('role') || searchParams.get('role') === 'customer') && (
+                        <div
+                            onClick={() => !searchParams.get('role') && setRole('customer')}
+                            className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${role === 'customer'
+                                ? 'border-primary bg-primary/5 text-primary'
+                                : 'border-border hover:border-primary/50'
+                                } ${searchParams.get('role') ? 'cursor-default' : ''}`}
+                        >
+                            <Users className="h-6 w-6" />
+                            <span className="text-xs font-bold">Pelanggan</span>
+                        </div>
+                    )}
+                    {(!searchParams.get('role') || searchParams.get('role') === 'worker') && (
+                        <div
+                            onClick={() => !searchParams.get('role') && setRole('worker')}
+                            className={`cursor-pointer p-3 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${role === 'worker'
+                                ? 'border-primary bg-primary/5 text-primary'
+                                : 'border-border hover:border-primary/50'
+                                } ${searchParams.get('role') ? 'cursor-default' : ''}`}
+                        >
+                            <Briefcase className="h-6 w-6" />
+                            <span className="text-xs font-bold">Mitra Tukang</span>
+                        </div>
+                    )}
                 </div>
             )}
 
