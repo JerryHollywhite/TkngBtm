@@ -1,21 +1,33 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2, Briefcase, Users } from 'lucide-react';
 import { MobileContainer } from '@/components/layout/MobileContainer';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [role, setRole] = useState<'customer' | 'worker'>('customer');
+
+    useEffect(() => {
+        const roleParam = searchParams.get('role');
+        if (roleParam === 'worker') {
+            setRole('worker');
+            setIsLogin(false); // Auto switch to register for worker links
+        } else if (roleParam === 'customer') {
+            setRole('customer');
+            setIsLogin(false); // Auto switch to register for customer links
+        }
+    }, [searchParams]);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -85,7 +97,9 @@ export default function LoginPage() {
                 <p className="text-muted-foreground text-sm">
                     {isLogin
                         ? 'Masuk untuk mengakses layanan tukang terbaik.'
-                        : 'Daftar sekarang dan temukan solusi rumahmu.'}
+                        : role === 'worker'
+                            ? 'Daftar sebagai Mitra Tukang dan mulai terima pesanan.'
+                            : 'Daftar sekarang dan temukan solusi rumahmu.'}
                 </p>
             </div>
 
@@ -200,5 +214,13 @@ export default function LoginPage() {
                 </p>
             </div>
         </MobileContainer>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+            <LoginContent />
+        </Suspense>
     );
 }
